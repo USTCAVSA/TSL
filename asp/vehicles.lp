@@ -2,11 +2,13 @@
 is_vehicle(ego;car).
 
 #program initial.
-% | : car : |
-% | : ego : |
-on_lane(ego,l2).
+
+on_lane(ego,l1).
 on_lane(car,l2).
-ahead(ego,car).
+behind(car,c1).
+behind(ego,c1).
+
 
 #program final.
-ahead(car,ego).
+:- not ahead(ego,c1).
+:- not ahead(car,c1).
