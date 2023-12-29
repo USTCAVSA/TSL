@@ -8,6 +8,8 @@ ahead(A,B) :- behind(B,A).
 cover(A,B) :- cover(B,A).
 successor(A,B) :- predecessor(B,A).
 predecessor(A,B) :- successor(B,A).
+successor(A,B,L) :- predecessor(B,A,L).
+predecessor(A,B,L) :- successor(B,A,L).
 
 :- left(A,B), right(A,B).
 :- behind(A,B), ahead(A,B).
@@ -28,18 +30,26 @@ neighbor_lane(L1,L2) :- is_lane(L1), is_lane(L2), right(L1,L2).
 
 % Exclusivity of longitudinal relationships
 % Any two vehicles on the same road must have a unique longitudinal relationship
+% TODO: if not on ajacent lanes?
 1{ ahead(A,B); behind(A,B); cover(A,B) }1 :- is_vehicle(A), is_vehicle(B), A != B, on_road(A,R), on_road(B,R), is_road(R).
 % The vehicle on this lane and the intersection on this lane must have a unique longitudinal relationship
 1{ ahead(A,C); behind(A,C); cover(A,C) }1 :- is_vehicle(A), is_cross(C), is_lane(L), on_lane(A,L), on_lane(C,L).
 
 % Transitivity of longitudinal relationships
-ahead(A,B) :- ahead(A,C), ahead(C,B), A != B, B != C, A != C.
-behind(A,B) :- behind(A,C), behind(C,B), A != B, B != C, A != C.
+% at least one of them is a vehicle
+ahead(A,B) :- ahead(A,C), ahead(C,B), A != B, B != C, A != C, not &tel{~ is_vehicle(A) & ~ is_vehicle(B)}.
+behind(A,B) :- behind(A,C), behind(C,B), A != B, B != C, A != C, not &tel{~ is_vehicle(A) & ~ is_vehicle(B)}.
 :- ahead(A,B), cover(B,C), ahead(C,A), A != B, B != C, A != C.
 :- cover(A,B), ahead(B,C), ahead(C,A), A != B, B != C, A != C.
 
 % Transitivity of longitudinal relationships of cross points
 ahead(A,C):- ahead(A,B), cover(B,C), is_cross(C), is_vehicle(A), is_vehicle(B).
+
+% cross point's successor and predecessor
+ahead(C2,A) :- is_vehicle(A), is_cross(C1), is_cross(C2), on_lane(A,L), ahead(C1,A), successor(C1,C2,L).
+:- is_vehicle(A), is_cross(C1), is_cross(C2), on_lane(A,L), cover(A,C1), successor(C1,C2,L), behind(C2,A).
+behind(C2,A) :- is_vehicle(A), is_cross(C1), is_cross(C2), on_lane(A,L), behind(C1,A), predecessor(C1,C2,L).
+:- is_vehicle(A), is_cross(C1), is_cross(C2), on_lane(A,L), cover(A,C1), predecessor(C1,C2,L), ahead(C2,A).
 
 % Longitudinal relationship of fork points
 ahead(A,F):- ahead(A,B), cover(B,F), is_fork(F), is_vehicle(A), is_vehicle(B).
@@ -51,6 +61,11 @@ ahead(A,F):- ahead(A,B), cover(B,F), is_fork(F), is_vehicle(A), is_vehicle(B).
 on_lane(A,L) :- is_vehicle(A), is_fork(F), on_lane(F,L), cover(A,F).
 
 #program dynamic.
+
+% auxiliary predicate longitudinal_changed/2
+longitudinal_changed(A,B) :- ahead(A,B), not 'ahead(A,B).
+longitudinal_changed(A,B) :- behind(A,B), not 'behind(A,B).
+longitudinal_changed(A,B) :- cover(A,B), not 'cover(A,B).
 
 % When not forking, it can only occupy 1 to 2 lanes
 % TODO: It may occupy 3 or more lanes, whether to consider (prohibit continuous lane change?)
@@ -67,6 +82,12 @@ on_lane(A,L) :- is_vehicle(A), is_fork(F), on_lane(F,L), cover(A,F).
 % cannot skip the cover state
 :- ahead(A,B), 'behind(A,B).
 :- behind(A,B), 'ahead(A,B).
+
+% each step only one longitudinal relationship can be changed for each vehicle except while forking
+:- longitudinal_changed(A,B), longitudinal_changed(A,C), B != C, is_vehicle(A), not forking(A), not 'forking(A).
+
+% only one fork point can be covered for each vehicle
+:- cover(A,F1), cover(A,F2), is_vehicle(A), is_fork(F1), is_fork(F2), F1 != F2.
 
 % cannot go backward: only cover to ahead a point
 :- is_vehicle(A), is_cross(C), 'ahead(A,C), cover(A,C).

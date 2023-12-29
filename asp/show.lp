@@ -6,3 +6,4 @@ vehicle_on_lane(A,L) :- is_vehicle(A), is_lane(L), on_lane(A,L).
 % #show behind/2.
 #show cover/2.
 #show vehicle_on_lane/2.
+#show longitudinal_changed/2.
