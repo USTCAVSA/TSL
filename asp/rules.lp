@@ -25,6 +25,10 @@ forking(A) :- is_vehicle(A), is_fork(F), cover(A,F).
 neighbor_lane(L1,L2) :- is_lane(L1), is_lane(L2), left(L1,L2).
 neighbor_lane(L1,L2) :- is_lane(L1), is_lane(L2), right(L1,L2).
 
+% auxiliary predicate is_point/1
+is_point(A) :- is_cross(A).
+is_point(A) :- is_fork(A).
+
 % constraint: vehicles cannot cover on the same lane
 :- is_vehicle(A), is_vehicle(B), on_lane(A,L), on_lane(B,L), A != B, cover(A,B).
 
@@ -45,11 +49,11 @@ behind(A,B) :- behind(A,C), behind(C,B), A != B, B != C, A != C, not &tel{~ is_v
 % Transitivity of longitudinal relationships of cross points
 ahead(A,C):- ahead(A,B), cover(B,C), is_cross(C), is_vehicle(A), is_vehicle(B).
 
-% cross point's successor and predecessor
-ahead(C2,A) :- is_vehicle(A), is_cross(C1), is_cross(C2), on_lane(A,L), ahead(C1,A), successor(C1,C2,L).
-:- is_vehicle(A), is_cross(C1), is_cross(C2), on_lane(A,L), cover(A,C1), successor(C1,C2,L), behind(C2,A).
-behind(C2,A) :- is_vehicle(A), is_cross(C1), is_cross(C2), on_lane(A,L), behind(C1,A), predecessor(C1,C2,L).
-:- is_vehicle(A), is_cross(C1), is_cross(C2), on_lane(A,L), cover(A,C1), predecessor(C1,C2,L), ahead(C2,A).
+% point's successor and predecessor
+ahead(P2,A) :- is_vehicle(A), is_point(P1), is_point(P2), on_lane(A,L), ahead(P1,A), successor(P1,P2,L).
+:- is_vehicle(A), is_point(P1), is_point(P2), on_lane(A,L), cover(A,P1), successor(P1,P2,L), behind(P2,A).
+behind(P2,A) :- is_vehicle(A), is_point(P1), is_point(P2), on_lane(A,L), behind(P1,A), predecessor(P1,P2,L).
+:- is_vehicle(A), is_point(P1), is_point(P2), on_lane(A,L), cover(A,P1), predecessor(P1,P2,L), ahead(P2,A).
 
 % Longitudinal relationship of fork points
 ahead(A,F):- ahead(A,B), cover(B,F), is_fork(F), is_vehicle(A), is_vehicle(B).
