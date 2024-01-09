@@ -66,6 +66,20 @@ on_lane(A,L) :- is_vehicle(A), is_fork(F), on_lane(F,L), cover(A,F).
 
 #program dynamic.
 
+% lane changing target
+changing_lane_to(A,L2) :- is_vehicle(A), is_lane(L1), is_lane(L2), L1 != L2, on_lane(A,L1), on_lane(A,L2), 'on_lane(A,L1), not 'on_lane(A,L2).
+1{finish_lane_changing(A, L1, L2); keep_lane_changing(A, L1, L2); abort_lane_changing(A, L1, L2)}1 :- is_vehicle(A), is_lane(L1), is_lane(L2), L1 != L2, 'on_lane(A,L1), 'on_lane(A,L2), 'changing_lane_to(A,L2).
+on_lane(A,L2) :- finish_lane_changing(A, L1, L2).
+-on_lane(A,L1) :- finish_lane_changing(A, L1, L2).
+
+on_lane(A,L1) :- keep_lane_changing(A, L1, L2).
+on_lane(A,L2) :- keep_lane_changing(A, L1, L2).
+changing_lane_to(A,L2) :- keep_lane_changing(A, L1, L2).
+
+on_lane(A,L1) :- abort_lane_changing(A, L1, L2).
+on_lane(A,L2) :- abort_lane_changing(A, L1, L2).
+changing_lane_to(A,L1) :- abort_lane_changing(A, L1, L2).
+
 % auxiliary predicate longitudinal_changed/2
 longitudinal_changed(A,B) :- ahead(A,B), not 'ahead(A,B).
 longitudinal_changed(A,B) :- behind(A,B), not 'behind(A,B).
