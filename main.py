@@ -109,8 +109,24 @@ class Application(_Application):
         horizon -- The number of states.
         """
         self.horizon = horizon
-        self.models.append(model)
+        self.models.append(self.parse_model(model))
+    
+    def parse_model(self, model):
+        table = {}
+        answer_set = []
+        for sym in model.symbols(shown=True):
+            if sym.type == _clingo.SymbolType.Function and len(sym.arguments) > 0:
+                table.setdefault(sym.arguments[-1].number, []).append(_clingo.Function(sym.name, sym.arguments[:-1], sym.positive))
+        for step in range(self.horizon+1):
+            state = []
+            symbols = table.get(step, [])
+            for sym in sorted(symbols):
+                if not sym.name.startswith('__'):
+                    state.append(sym)
+            answer_set.append(state)
+        return answer_set
 
+    
     def print_model(self, model, printer):
         table = {}
         for sym in model.symbols(shown=True):
@@ -144,15 +160,17 @@ class Application(_Application):
 
         self.ret = imain(prg, future_sigs, program_parts, self.__on_model, self.__imin, self.__imax, self.__istop)
 
-def solve(map, vehilces, imin=0, imax=None, istop="SAT"):
+def solve(map, vehilces, imin=0, imax=None, istop="SAT", horizon=True):
     """
     Run the telingo application.
     """
     rule = open(os.path.join(os.path.dirname(__file__), 'asp/rules.lp')).read()
     show = open(os.path.join(os.path.dirname(__file__), 'asp/show.lp')).read()
     rules = [rule, map, vehilces, show]
+    if horizon:
+        rules.append(open(os.path.join(os.path.dirname(__file__), 'asp/horizon.lp')).read())
     app = Application(rules, imin, imax, istop)
-    _clingo.clingo_main(app, ["0","-q2"])
+    _clingo.clingo_main(app, ["0","-q2","-Wnone","--outf=3"])
     return app.models, app.ret, app.horizon
 
 if __name__ == "__main__":

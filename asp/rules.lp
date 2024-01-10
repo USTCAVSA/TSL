@@ -67,7 +67,7 @@ on_lane(A,L) :- is_vehicle(A), is_fork(F), on_lane(F,L), cover(A,F).
 #program dynamic.
 
 % lane changing target
-changing_lane_to(A,L2) :- is_vehicle(A), is_lane(L1), is_lane(L2), L1 != L2, on_lane(A,L1), on_lane(A,L2), 'on_lane(A,L1), not 'on_lane(A,L2).
+changing_lane_to(A,L2) :- is_vehicle(A), is_lane(L1), is_lane(L2), L1 != L2, on_lane(A,L1), on_lane(A,L2), 'on_lane(A,L1), not 'on_lane(A,L2), not forking(A).
 1{finish_lane_changing(A, L1, L2); keep_lane_changing(A, L1, L2); abort_lane_changing(A, L1, L2)}1 :- is_vehicle(A), is_lane(L1), is_lane(L2), L1 != L2, 'on_lane(A,L1), 'on_lane(A,L2), 'changing_lane_to(A,L2).
 on_lane(A,L2) :- finish_lane_changing(A, L1, L2).
 -on_lane(A,L1) :- finish_lane_changing(A, L1, L2).
@@ -81,9 +81,13 @@ on_lane(A,L2) :- abort_lane_changing(A, L1, L2).
 changing_lane_to(A,L1) :- abort_lane_changing(A, L1, L2).
 
 % auxiliary predicate longitudinal_changed/2
-longitudinal_changed(A,B) :- ahead(A,B), not 'ahead(A,B).
-longitudinal_changed(A,B) :- behind(A,B), not 'behind(A,B).
+% longitudinal_changed(A,B) :- ahead(A,B), not 'ahead(A,B).
+% longitudinal_changed(A,B) :- behind(A,B), not 'behind(A,B).
+% longitudinal_changed(A,B) :- cover(A,B), not 'cover(A,B).
+longitudinal_changed(A,B) :- ahead(A,B), 'cover(A,B).
+longitudinal_changed(A,B) :- behind(A,B), 'cover(A,B).
 longitudinal_changed(A,B) :- cover(A,B), not 'cover(A,B).
+longitudinal_changed(A,B) :- not cover(A,B), 'cover(A,B).
 
 % When not forking, it can only occupy 1 to 2 lanes
 % TODO: It may occupy 3 or more lanes, whether to consider (prohibit continuous lane change?)
@@ -101,8 +105,8 @@ longitudinal_changed(A,B) :- cover(A,B), not 'cover(A,B).
 :- ahead(A,B), 'behind(A,B).
 :- behind(A,B), 'ahead(A,B).
 
-% each step only one longitudinal relationship can be changed for each vehicle except while forking
-:- longitudinal_changed(A,B), longitudinal_changed(A,C), B != C, is_vehicle(A), not forking(A), not 'forking(A).
+% each step only one longitudinal relationship can be changed for each vehicle
+:- longitudinal_changed(A,B), longitudinal_changed(A,C), B != C, is_vehicle(A).
 
 % only one fork point can be covered for each vehicle
 :- cover(A,F1), cover(A,F2), is_vehicle(A), is_fork(F1), is_fork(F2), F1 != F2.
