@@ -110,7 +110,8 @@ longitudinal_changed(A,B) :- not cover(A,B), 'cover(A,B).
 :- longitudinal_changed(A,B), longitudinal_changed(A,C), B != C, is_vehicle(A).
 
 % only one fork point can be covered for each vehicle
-:- cover(A,F1), cover(A,F2), is_vehicle(A), is_fork(F1), is_fork(F2), F1 != F2.
+% TODO: remove this constraint?
+% :- cover(A,F1), cover(A,F2), is_vehicle(A), is_fork(F1), is_fork(F2), F1 != F2.
 
 % cannot go backward: only cover to ahead a point
 :- is_vehicle(A), is_cross(C), 'ahead(A,C), cover(A,C).
