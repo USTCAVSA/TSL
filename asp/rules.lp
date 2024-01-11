@@ -33,9 +33,10 @@ is_point(A) :- is_fork(A).
 :- is_vehicle(A), is_vehicle(B), on_lane(A,L), on_lane(B,L), A != B, cover(A,B).
 
 % Exclusivity of longitudinal relationships
-% Any two vehicles on the same road must have a unique longitudinal relationship
-% TODO: if not on ajacent lanes?
-1{ ahead(A,B); behind(A,B); cover(A,B) }1 :- is_vehicle(A), is_vehicle(B), A != B, on_road(A,R), on_road(B,R), is_road(R).
+% Any two vehicles on the same road and same/adjacent lane(s) must have a unique longitudinal relationship
+% 1{ ahead(A,B); behind(A,B); cover(A,B) }1 :- is_vehicle(A), is_vehicle(B), A != B, on_road(A,R), on_road(B,R), is_road(R).
+1{ ahead(A,B); behind(A,B); cover(A,B) }1 :- is_vehicle(A), is_vehicle(B), A != B, on_road(A,R), on_road(B,R), is_road(R), on_lane(A,L1), on_lane(B,L2), neighbor_lane(L1,L2).
+1{ ahead(A,B); behind(A,B) }1 :- is_vehicle(A), is_vehicle(B), A != B, on_road(A,R), on_road(B,R), is_road(R), on_lane(A,L), on_lane(B,L), is_lane(L).
 % The vehicle on this lane and the intersection on this lane must have a unique longitudinal relationship
 1{ ahead(A,C); behind(A,C); cover(A,C) }1 :- is_vehicle(A), is_cross(C), is_lane(L), on_lane(A,L), on_lane(C,L).
 
