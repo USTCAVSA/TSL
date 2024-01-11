@@ -98,9 +98,12 @@ longitudinal_changed(A,B) :- not cover(A,B), 'cover(A,B).
 0{on_lane(A,L2) : is_lane(L2),neighbor_lane(L1,L2)}1 :- is_vehicle(A), cover(A,F), is_fork(F), is_lane(L1), on_lane(A,L1), on_lane(F,L1).
 
 % behind or cover fork point when on the predecessor lane
-1{behind(A,F); cover(A,F)}1 :- is_fork(F), is_vehicle(A), predecessor(F,L), not not on_lane(A,L).
+% 1{behind(A,F); cover(A,F)}1 :- is_fork(F), is_vehicle(A), predecessor(F,L), not not on_lane(A,L).
+1{behind(A,F); cover(A,F)}1 :- is_fork(F), is_vehicle(A), predecessor(F,L), on_lane(A,L).
 % ahead or cover fork point when on the successor lane
-1{ahead(A,F); cover(A,F)}1 :- is_fork(F), is_vehicle(A), successor(F,L), not not on_lane(A,L).
+% 1{ahead(A,F); cover(A,F)}1 :- is_fork(F), is_vehicle(A), successor(F,L), not not on_lane(A,L).
+1{ahead(A,F); cover(A,F)}1 :- is_fork(F), is_vehicle(A), successor(F,L), on_lane(A,L).
+0{on_lane(A,L)}1 :- is_vehicle(A), 'on_lane(A,L).
 
 % cannot skip the cover state
 :- ahead(A,B), 'behind(A,B).
