@@ -113,9 +113,9 @@ longitudinal_changed(A,B) :- not cover(A,B), 'cover(A,B).
 % TODO: remove this constraint?
 % :- cover(A,F1), cover(A,F2), is_vehicle(A), is_fork(F1), is_fork(F2), F1 != F2.
 
-% cannot go backward: only cover to ahead a point
-:- is_vehicle(A), is_cross(C), 'ahead(A,C), cover(A,C).
-:- is_vehicle(A), is_fork(F), 'ahead(A,F), cover(A,F).
+% cannot go backward wrt. a point
+:- is_vehicle(A), is_point(P), 'ahead(A,P), cover(A,P).
+:- is_vehicle(A), is_point(P), 'cover(A,P), behind(A,P).
 
 % lane occupancy rules for lane transition
 % only adjacent lanes can be transited to while not forking
