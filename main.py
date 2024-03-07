@@ -160,17 +160,18 @@ class Application(_Application):
 
         self.ret = imain(prg, future_sigs, program_parts, self.__on_model, self.__imin, self.__imax, self.__istop)
 
-def solve(map, vehilces, imin=0, imax=None, istop="SAT", horizon=True):
+def solve(map, vehilces, goal, imin=0, imax=None, istop="SAT", models=0, horizon=True):
     """
     Run the telingo application.
     """
     rule = open(os.path.join(os.path.dirname(__file__), 'asp/rules.lp')).read()
     show = open(os.path.join(os.path.dirname(__file__), 'asp/show.lp')).read()
-    rules = [rule, map, vehilces, show]
+    rss = open(os.path.join(os.path.dirname(__file__), 'asp/rss.lp')).read()
+    rules = [rule, map, vehilces, rss, goal, show]
     if horizon:
         rules.append(open(os.path.join(os.path.dirname(__file__), 'asp/horizon.lp')).read())
     app = Application(rules, imin, imax, istop)
-    _clingo.clingo_main(app, ["0","-q2","-Wnone","--outf=3"])
+    _clingo.clingo_main(app, [f"{models}","-q2","-Wnone","--outf=3"])
     return app.models, app.ret, app.horizon
 
 if __name__ == "__main__":

@@ -11,3 +11,5 @@ vehicle_on_lane(A,L) :- is_vehicle(A), is_lane(L), on_lane(A,L).
 % #show keep_lane_changing/3.
 % #show abort_lane_changing/3.
 #show longitudinal_changed/2.
+#show lateral_dangerous/2.
+#show longitudinal_dangerous/2.
