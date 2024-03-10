@@ -11,8 +11,8 @@ is_valid_time(T) :- time_is(T).
 seen(vehicle_on_lane(A,L), T) :- vehicle_on_lane(A,L), time_is(T).
 seen(ahead(A,B), T) :- ahead(A,B), time_is(T).
 seen(cover(A,B), T) :- cover(A,B), time_is(T).
-seen(lateral_dangerous(A,B), T) :- lateral_dangerous(A,B), time_is(T).
-seen(longitudinal_dangerous(A,B), T) :- longitudinal_dangerous(A,B), time_is(T).
+% seen(lateral_dangerous(A,B), T) :- lateral_dangerous(A,B), time_is(T).
+% seen(longitudinal_dangerous(A,B), T) :- longitudinal_dangerous(A,B), time_is(T).
 % seen(changing_lane_to(A,L), T) :- changing_lane_to(A,L), time_is(T).
 hold_nums(M,T) :- M = #count{X:seen(X,T)}, is_valid_time(T).
 

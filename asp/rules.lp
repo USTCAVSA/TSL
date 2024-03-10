@@ -23,7 +23,7 @@ neighbor_lane(L1,L2) :- is_lane(L1), is_lane(L2), right(L1,L2).
 % Exclusivity of longitudinal relationships
 % Any two vehicles on the same road and same/adjacent lane(s) must have a unique longitudinal relationship
 % 1{ ahead(A,B); behind(A,B); cover(A,B) }1 :- is_vehicle(A), is_vehicle(B), A != B, on_road(A,R), on_road(B,R), is_road(R).
-1{ ahead(A,B); behind(A,B); cover(A,B) }1 :- is_ego(A), is_vehicle(B), A != B, on_road(A,R), on_road(B,R), is_road(R), on_lane(A,L1), on_lane(B,L2), neighbor_lane(L1,L2).
+1{ ahead(A,B); behind(A,B); cover(A,B) }1 :- is_ego(A), is_vehicle(B), A != B, on_road(A,R), on_road(B,R), is_road(R), on_lane(A,L1), on_lane(B,L2).
 1{ ahead(A,B); behind(A,B) }1 :- is_ego(A), is_vehicle(B), A != B, on_road(A,R), on_road(B,R), is_road(R), on_lane(A,L), on_lane(B,L), is_lane(L).
 
 % Transitivity of longitudinal relationships
@@ -53,8 +53,12 @@ behind(A,B) :- behind(A,C), behind(C,B), A != B, B != C, A != C, not &tel{~ is_v
 :- ahead(A,B), 'behind(A,B).
 :- behind(A,B), 'ahead(A,B).
 
+ahead(A,B) :- 'ahead(A,B), not is_ego(A), not is_ego(B).
+behind(A,B) :- 'behind(A,B), not is_ego(A), not is_ego(B).
+cover(A,B) :- 'cover(A,B), not is_ego(A), not is_ego(B).
+
 % each step only one longitudinal relationship can be changed for each vehicle
-% :- longitudinal_changed(A,B), longitudinal_changed(A,C), B != C, is_vehicle(A).
+% :- longitudinal_changed(A,B), longitudinal_changed(A,C), B != C, is_ego(E).
 
 % lane occupancy rules for lane transition
 % only adjacent lanes can be transited to

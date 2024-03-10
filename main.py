@@ -166,8 +166,8 @@ def solve(map, vehilces, goal, imin=0, imax=None, istop="SAT", models=0, horizon
     """
     rule = open(os.path.join(os.path.dirname(__file__), 'asp/rules.lp')).read()
     show = open(os.path.join(os.path.dirname(__file__), 'asp/show.lp')).read()
-    rss = open(os.path.join(os.path.dirname(__file__), 'asp/rss.lp')).read()
-    rules = [rule, map, vehilces, rss, goal, show]
+    branchcut = open(os.path.join(os.path.dirname(__file__), 'asp/branchcut.lp')).read()
+    rules = [rule, map, vehilces, branchcut, goal, show]
     if horizon:
         rules.append(open(os.path.join(os.path.dirname(__file__), 'asp/horizon.lp')).read())
     app = Application(rules, imin, imax, istop)
