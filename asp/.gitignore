@@ -1,6 +1,3 @@
 *.lp
-!rules.lp
-!show.lp
-!horizon.lp
+!model.lp
 !rss.lp
-!branchcut.lp

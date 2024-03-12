@@ -164,12 +164,12 @@ def solve(map, vehilces, goal, imin=0, imax=None, istop="SAT", models=0, horizon
     """
     Run the telingo application.
     """
-    rule = open(os.path.join(os.path.dirname(__file__), 'asp/rules.lp')).read()
-    show = open(os.path.join(os.path.dirname(__file__), 'asp/show.lp')).read()
-    branchcut = open(os.path.join(os.path.dirname(__file__), 'asp/branchcut.lp')).read()
-    rules = [rule, map, vehilces, branchcut, goal, show]
-    if horizon:
-        rules.append(open(os.path.join(os.path.dirname(__file__), 'asp/horizon.lp')).read())
+    model = open(os.path.join(os.path.dirname(__file__), 'asp/model.lp')).read()
+    # branchcut = open(os.path.join(os.path.dirname(__file__), 'asp/branchcut.lp')).read()
+    rss = open(os.path.join(os.path.dirname(__file__), 'asp/rss.lp')).read()
+    rules = [model, map, vehilces, goal, rss]
+    # if horizon:
+    #     rules.append(open(os.path.join(os.path.dirname(__file__), 'asp/horizon.lp')).read())
     app = Application(rules, imin, imax, istop)
     _clingo.clingo_main(app, [f"{models}","-q2","-Wnone","--outf=3"])
     return app.models, app.ret, app.horizon
