@@ -160,16 +160,19 @@ class Application(_Application):
 
         self.ret = imain(prg, future_sigs, program_parts, self.__on_model, self.__imin, self.__imax, self.__istop)
 
-def solve(map, vehilces, goal, imin=0, imax=None, istop="SAT", models=0, horizon=True):
+_model = open(os.path.join(os.path.dirname(__file__), 'asp/model.lp')).read()
+_branchcut = open(os.path.join(os.path.dirname(__file__), 'asp/branchcut.lp')).read()
+_rss = open(os.path.join(os.path.dirname(__file__), 'asp/rss.lp')).read()
+
+def solve(map, vehilces, goal="", imin=0, imax=None, istop="SAT", models=0, branchcut=True):
     """
     Run the telingo application.
     """
-    model = open(os.path.join(os.path.dirname(__file__), 'asp/model.lp')).read()
-    # branchcut = open(os.path.join(os.path.dirname(__file__), 'asp/branchcut.lp')).read()
-    rss = open(os.path.join(os.path.dirname(__file__), 'asp/rss.lp')).read()
-    rules = [model, map, vehilces, goal, rss]
-    # if horizon:
-    #     rules.append(open(os.path.join(os.path.dirname(__file__), 'asp/horizon.lp')).read())
+    
+    rules = [_model, map, vehilces, goal, _rss]
+    if branchcut:
+        rules.append(_branchcut)
+    
     app = Application(rules, imin, imax, istop)
     _clingo.clingo_main(app, [f"{models}","-q2","-Wnone","--outf=3"])
     return app.models, app.ret, app.horizon

@@ -41,14 +41,16 @@ changed(on_lane(V)) :- on_lane(V,L), not 'on_lane(V,L), is_lane(L), is_vehicle(V
 1 { occurs(V, A) : action_of_others(A) } 1 :- is_vehicle(V), not is_ego(V).
 
 1 { distance(V,VR,D1) : is_distance(D1), D1 <= D } 1 :- occurs(V, inc_distance), 'distance(V, VR, D), is_vehicle(V), is_vehicle(VR), D > 0.
-1 { distance(VF,V,D1) : is_distance(D1), D1 >= D } 1 :- occurs(V, inc_distance), 'distance(VF, V, D), is_vehicle(V), is_vehicle(VF).
+1 { distance(VF,V,D1) : is_distance(D1), D1 > D } 1 :- occurs(V, inc_distance), 'distance(VF, V, D), is_vehicle(V), is_vehicle(VF), D < 4.
+distance(VF,V,4) :- occurs(V, inc_distance), 'distance(VF, V, 4), is_vehicle(V), is_vehicle(VF).
 distance(VR, V, 0) :- occurs(V, inc_distance), is_vehicle(V), is_vehicle(VR), 'distance(V, VR, 0).
 on_lane(V, L) :- occurs(V, inc_distance), 'on_lane(V, L), is_vehicle(V), is_lane(L).
 :- 0 = #count{ V1 : changed(distance(V,V1)); V1 : changed(distance(V1,V)) } , occurs(V, inc_distance), is_vehicle(V).
 :- occurs(V, inc_distance), 'distance(V, VR, D), is_vehicle(V), is_vehicle(VR), D < 2, on_lane(V,L), on_lane(VR,L), is_lane(L).
 
-1 { distance(V,VR,D1) : is_distance(D1), D1 >= D } 1 :- occurs(V, dec_distance), 'distance(V, VR, D), is_vehicle(V), is_vehicle(VR).
+1 { distance(V,VR,D1) : is_distance(D1), D1 > D } 1 :- occurs(V, dec_distance), 'distance(V, VR, D), is_vehicle(V), is_vehicle(VR), D < 4.
 1 { distance(VF,V,D1) : is_distance(D1), D1 <= D } 1 :- occurs(V, dec_distance), 'distance(VF, V, D), is_vehicle(V), is_vehicle(VF), D > 0.
+distance(V,VR,4) :- occurs(V, dec_distance), 'distance(V, VR, 4), is_vehicle(V), is_vehicle(VR).
 distance(V, VF, 0) :- occurs(V, dec_distance), is_vehicle(V), is_vehicle(VF), 'distance(VF, V, 0).
 on_lane(V, L) :- occurs(V, dec_distance), 'on_lane(V, L), is_vehicle(V), is_lane(L).
 :- 0 = #count{ V1 : changed(distance(V,V1)); V1 : changed(distance(V1,V)) } , occurs(V, dec_distance), is_vehicle(V).
@@ -67,10 +69,10 @@ on_lane(V, L) :- occurs(V, keep), 'on_lane(V, L), is_vehicle(V), is_lane(L).
 
 #show distance/3.
 #show on_lane/2.
-#show occurs/2.
-#show ahead/2.
-#show behind/2.
-#show cover/2.
+% #show occurs/2.
+% #show ahead/2.
+% #show behind/2.
+% #show cover/2.
 #show left_relation/1.
 #show right_relation/1.
 #show same_lane_relation/1.
