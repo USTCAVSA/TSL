@@ -19,8 +19,6 @@ right(L1, L2) :- left(L2, L1).
 
 :- 1 != #count{ D : distance(V,V1,D); D : distance(V1,V,D) }, is_vehicle(V), is_vehicle(V1), V != V1.
 
-% :- distance(V1, V2, D12), distance(V2, V3, D23), distance(V1, V3, D13), D13 < D23, is_vehicle(V1), is_vehicle(V2), is_vehicle(V3), V1 != V2, V2 != V3, V1 != V3.
-
 :- distance(V1, V2, 0), is_vehicle(V1), is_vehicle(V2), V1 != V2, on_lane(V1, L), on_lane(V2, L), is_lane(L).
 
 % aux
@@ -36,6 +34,8 @@ ego_on_lane(L) :- on_lane(E, L), is_ego(E), is_lane(L).
 
 changed(distance(VF, VR)) :- distance(VF, VR, D), not 'distance(VF, VR, D), is_distance(D), is_vehicle(VF), is_vehicle(VR).
 changed(on_lane(V)) :- on_lane(V,L), not 'on_lane(V,L), is_lane(L), is_vehicle(V).
+
+:- distance(V1, V2, D12), distance(V2, V3, D23), distance(V1, V3, D13), D13 < D23, D13 < 3, is_vehicle(V1), is_vehicle(V2), is_vehicle(V3), V1 != V2, V2 != V3, V1 != V3.
 
 1 { occurs(E, A) : action_of_ego(A) } 1 :- is_ego(E).
 1 { occurs(V, A) : action_of_others(A) } 1 :- is_vehicle(V), not is_ego(V).
