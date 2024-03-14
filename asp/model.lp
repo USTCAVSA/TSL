@@ -69,7 +69,7 @@ on_lane(V, L) :- occurs(V, keep), 'on_lane(V, L), is_vehicle(V), is_lane(L).
 
 #show distance/3.
 #show on_lane/2.
-% #show occurs/2.
+#show occurs/2.
 % #show ahead/2.
 % #show behind/2.
 % #show cover/2.
@@ -80,3 +80,9 @@ on_lane(V, L) :- occurs(V, keep), 'on_lane(V, L), is_vehicle(V), is_lane(L).
 #show behind_relation/1.
 #show cover_relation/1.
 #show ego_on_lane/1.
+
+% #heuristic occurs(V, keep) : is_vehicle(V), not is_ego(V).  [10,level]
+% #heuristic occurs(V, inc_distance) : is_vehicle(V), not is_ego(V).  [5,level]
+% #heuristic occurs(V, dec_distance) : is_vehicle(V), not is_ego(V).  [5,level]
+% #heuristic occurs(V, cut_left) : is_vehicle(V), not is_ego(V).  [1,level]
+% #heuristic occurs(V, cut_right) : is_vehicle(V), not is_ego(V).  [1,level]

@@ -164,7 +164,7 @@ _model = open(os.path.join(os.path.dirname(__file__), 'asp/model.lp')).read()
 _branchcut = open(os.path.join(os.path.dirname(__file__), 'asp/branchcut.lp')).read()
 _rss = open(os.path.join(os.path.dirname(__file__), 'asp/rss.lp')).read()
 
-def solve(map, vehilces, goal="", imin=0, imax=None, istop="SAT", models=0, branchcut=True):
+def solve(map, vehilces, goal="", imin=0, imax=None, istop="SAT", models=0, branchcut=True, options=[]):
     """
     Run the telingo application.
     """
@@ -174,7 +174,7 @@ def solve(map, vehilces, goal="", imin=0, imax=None, istop="SAT", models=0, bran
         rules.append(_branchcut)
     
     app = Application(rules, imin, imax, istop)
-    _clingo.clingo_main(app, [f"{models}","-q2","-Wnone","--outf=3"])
+    _clingo.clingo_main(app, [f"{models}","-q2","-Wnone","--outf=3"] + options)
     return app.models, app.ret, app.horizon
 
 if __name__ == "__main__":
