@@ -32,10 +32,16 @@ ego_on_lane(L) :- on_lane(E, L), is_ego(E), is_lane(L).
 #program dynamic.
 
 :- distance(V1, V2, 0), is_vehicle(V1), is_vehicle(V2), V1 != V2, on_lane(V1, L), on_lane(V2, L), is_lane(L).
+:- distance(VF, E, 1), is_vehicle(VF), is_ego(E), VF != E, on_lane(VF, L), on_lane(E, L), is_lane(L).
 
 changed(distance(VF, VR)) :- distance(VF, VR, D), not 'distance(VF, VR, D), is_distance(D), is_vehicle(VF), is_vehicle(VR).
 changed(on_lane(V)) :- on_lane(V,L), not 'on_lane(V,L), is_lane(L), is_vehicle(V).
 
+% changed_front_count(C) :- C = #count{ V : changed(distance(V,E)) }, is_ego(E).
+% changed_aft_count(C) :- C = #count{ V : changed(distance(E,V)) }, is_ego(E).
+% :- changed_front_count(C1), changed_aft_count(C2), C1 + C2 > 1.
+% #show changed_front_count/1.
+% #show changed_aft_count/1.
    
 1 { occurs(E, A) : action_of_ego(A) } 1 :- is_ego(E).
 1 { occurs(V, A) : action_of_others(A) } 1 :- is_vehicle(V), not is_ego(V).
