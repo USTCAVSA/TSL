@@ -1,26 +1,31 @@
 # TSL
-Traffic Scenario Logic
+Traffic Scenario Logic: A Spatial-Temporal Logic for Modeling and Reasoning of Urban Traffic Scenarios
 
 使用时态逻辑建模的城市交通场景逻辑
 
-## 地图描述
+## How to use
 
-地图包含以下基本构成元素, 每种元素有对应的is_xxx/1谓词.
-- road: 道路. 道路包含固定数量的车道, 且车道间存在左右关系, 允许变道.
-- lane: 车道. 可供机动车行驶的区域, 机动车在车道上只能单向行驶, 且同一车道不能并排.
-- cross: 交叉点. 两个车道物理上相交, 但不互通时形成交叉点. 交叉点同一时刻只允许一辆车占用.
-- fork: 分支点. 当一个车道分裂为多个车道, 或多个车道合并为一个车道时形成分支点. 分支点同一时刻只允许一辆车占用.
+1. You need to install [Telingo](https://github.com/potassco/telingo) to run TSL.
+2. Enter the `asp/` folder.
+3. Add a map file `map.lp` and the vehicles' initial configuration `car.lp`.
+4. Run Telingo to solve it:
+    ```
+    telingo N map.lp car.lp rules.lp show.lp
+    ```
+    where `N` is the number of answer sets you want (0 for all). You can refer to Telingo's document for more usage of other parameters.
 
-构成元素之间存在如下关系谓词:
-- has_lane/2: 描述道路与车道之间的从属关系. 一个车道只能属于一条道路. has_lane(r,l)表示车道l属于道路r.
-- left/2: 描述车道之间的横向关系. left(l1,l2)表示车道l1在l2的左侧 (紧邻). 同一道路上的所有车道间必须存在left关系. 其对称谓词为right/2.
-- successor/2: 描述分支点与车道间的序关系. successor(f,l)表示l是f的后继, 即交叉点的出边; 反过来可表示交叉点的入边.
-- successor/3: 描述分支/交叉点之间的序关系. successor(p1,p2,l)表示在车道l上,p2是p1的后继.
+The conversion from OpenDRIVE to TSL representation is a part of our [DADSim Project](https://github.com/DAD-Sim).
 
-## 状态表示
+## Examples
 
-TODO
-
-## 约束规则
-
-TODO
+## Citation
+```
+@misc{wang2024traffic,
+      title={Traffic Scenario Logic: A Spatial-Temporal Logic for Modeling and Reasoning of Urban Traffic Scenarios}, 
+      author={Ruolin Wang and Yuejiao Xu and Jianmin Ji},
+      year={2024},
+      eprint={2405.13715},
+      archivePrefix={arXiv},
+      primaryClass={cs.LO}
+}
+```
