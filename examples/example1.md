@@ -31,7 +31,7 @@ You can create `car.lp` and `map.lp` under the `asp/` folder, then run
 ```shell
 telingo 0 map.lp car.lp rules.lp show.lp
 ```
-You will get four answer sets:
+You will get 4 answer sets:
 ```
 Answer: 1
  State 0:
