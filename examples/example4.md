@@ -12,7 +12,7 @@ on_lane(c1,l1).
 lonpr(c1,x1,behind).
 
 #program final.
-lonpr(c1,x2,ahead).
+:- not lonpr(c1,x2,ahead).
 ```
 
 ```prolog

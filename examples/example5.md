@@ -22,7 +22,7 @@ on_lane(c3,l3).
 lonr(c2,c1,ahead).
 
 #program final.
-lonr(c1,c2,ahead).
+:- not lonr(c1,c2,ahead).
 :- on_lane(c1,l2).
 ```
 

@@ -3,6 +3,7 @@
 % Symmetric predicates
 right(A,B) :- left(B,A).
 left(A,B) :- right(B,A).
+is_longitudinal_relation(behind;ahead;cover).
 lonr(A,B,behind) :- lonr(B,A,ahead).
 lonr(A,B,ahead) :- lonr(B,A,behind).
 lonr(A,B,cover) :- lonr(B,A,cover).
@@ -13,6 +14,11 @@ successor(A,B) :- predecessor(B,A).
 predecessor(A,B) :- successor(B,A).
 successor(A,B,L) :- predecessor(B,A,L).
 predecessor(A,B,L) :- successor(B,A,L).
+
+% shortcut for the length comparison
+shorter(C,P1,P2) :- lonpr(C,P1,ahead), lonpr(C,P2,behind), is_vehicle(C), P1 != P2.
+shorter(C,P2,P1) :- lonpr(C,P1,ahead), lonpr(C,P2,behind), is_vehicle(C), P1 != P2.
+longer(C,P1,P2) :- lonpr(C,P1,cover), lonpr(C,P2,cover), is_vehicle(C), P1 != P2.
 
 :- left(A,B), right(A,B).
 :- lonr(A,B,behind), lonr(A,B,ahead).
@@ -36,6 +42,7 @@ is_point(A) :- is_overlap(A).
 % constraint: vehicles cannot cover on the same lane
 :- is_vehicle(A), is_vehicle(B), on_lane(A,L), on_lane(B,L), A != B, lonr(A,B,cover).
 
+#program dynamic.
 % Exclusivity of longitudinal relationships
 % Any two vehicles on the same road and same/adjacent lane(s) must have a unique longitudinal relationship
 % 1{ ahead(A,B); behind(A,B); cover(A,B) }1 :- is_vehicle(A), is_vehicle(B), A != B, on_road(A,R), on_road(B,R), is_road(R).
@@ -46,6 +53,7 @@ is_point(A) :- is_overlap(A).
 % The vehicle must have a relationship with the point on the same road
 1{ lonpr(A,P,ahead); lonpr(A,P,behind); lonpr(A,P,cover) }1 :- is_vehicle(A), is_point(P), on_road(A,R), on_road(P,R).
 
+#program always.
 % Transitivity of longitudinal relationships of vehicles
 lonr(A,B,ahead) :- lonr(A,C,ahead), lonr(C,B,ahead), A != B, B != C, A != C, on_road(A,R), on_road(B,R), on_road(C,R).
 lonr(A,B,behind) :- lonr(A,C,behind), lonr(C,B,behind), A != B, B != C, A != C, on_road(A,R), on_road(B,R), on_road(C,R).
@@ -82,15 +90,19 @@ lonro(C1,C2,cover) :- fwdover(C1,P1,P2), fwdover(C2,P1,P2), is_vehicle(C1), is_v
 lonro(C1,C2,ahead) :- rvsover(C1,P1,P2), rvsover(C2,P1,P2), is_vehicle(C1), is_vehicle(C2), lonr(C1,C2,behind).
 lonro(C1,C2,behind) :- rvsover(C1,P1,P2), rvsover(C2,P1,P2), is_vehicle(C1), is_vehicle(C2), lonr(C1,C2,ahead).
 lonro(C1,C2,cover) :- rvsover(C1,P1,P2), rvsover(C2,P1,P2), is_vehicle(C1), is_vehicle(C2), lonr(C1,C2,cover).
-1{ lonro(C1,C2,ahead); lonro(C1,C2,behind); lonro(C1,C2,cover) }1 :- is_vehicle(C1), is_vehicle(C2), C1 != C2, fwdover(C1,P1,P2), rvsover(C2,P1,P2).
 :- lonro(C1,C2,cover), is_vehicle(C1), is_vehicle(C2), C1 != C2.
+#program dynamic.
+1{ lonro(C1,C2,ahead); lonro(C1,C2,behind); lonro(C1,C2,cover) }1 :- is_vehicle(C1), is_vehicle(C2), C1 != C2, fwdover(C1,P1,P2), rvsover(C2,P1,P2).
+#program always.
 
+#program dynamic.
 % behind or cover fork point when on the predecessor lane
 % 1{behind(A,F); cover(A,F)}1 :- is_fork(F), is_vehicle(A), predecessor(F,L), not not on_lane(A,L).
 1{lonpr(A,F,behind); lonpr(A,F,cover)}1 :- is_fork(F), is_vehicle(A), predecessor(F,L), on_lane(A,L).
 % ahead or cover fork point when on the successor lane
 % 1{ahead(A,F); cover(A,F)}1 :- is_fork(F), is_vehicle(A), successor(F,L), not not on_lane(A,L).
 1{lonpr(A,F,ahead); lonpr(A,F,cover)}1 :- is_fork(F), is_vehicle(A), successor(F,L), on_lane(A,L).
+#program always.
 
 #program dynamic.
 

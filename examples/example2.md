@@ -14,8 +14,8 @@ lonpr(c1,x1,behind).
 lonpr(c2,x1,behind).
 
 #program final.
-lonpr(c1,x1,ahead).
-lonpr(c2,x1,ahead).
+:- not lonpr(c1,x1,ahead).
+:- not lonpr(c2,x1,ahead).
 ```
 
 ```prolog

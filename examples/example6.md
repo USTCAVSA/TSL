@@ -28,6 +28,18 @@ is_road(r1;r2;r3;r4;r5;r6;r13;r63;r45;r15;r42;r62).
 is_lane(l1;l2;l3;l4;l5;l6;l13;l63;l45;l15;l42;l62).
 is_fork(n1;n2;n3;n4;n5;n6).
 is_cross(x1;x2;x3).
+has_lane(r1,l1).
+has_lane(r2,l2).
+has_lane(r3,l3).
+has_lane(r4,l4).
+has_lane(r5,l5).
+has_lane(r6,l6).
+has_lane(r13,l13).
+has_lane(r63,l63).
+has_lane(r45,l45).
+has_lane(r15,l15).
+has_lane(r42,l42).
+has_lane(r62,l62).
 
 on_lane(n1,l1).
 on_lane(n1,l13).
