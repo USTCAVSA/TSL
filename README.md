@@ -22,12 +22,13 @@ See `examples/`.
 
 ## Citation
 ```
-@misc{wang2024traffic,
-      title={Traffic Scenario Logic: A Spatial-Temporal Logic for Modeling and Reasoning of Urban Traffic Scenarios}, 
-      author={Ruolin Wang and Yuejiao Xu and Jianmin Ji},
-      year={2024},
-      eprint={2405.13715},
-      archivePrefix={arXiv},
-      primaryClass={cs.LO}
+@inproceedings{wang2025traffic,
+  title={Traffic Scenario Logic: A Spatial-Temporal Logic for Modeling and Reasoning of Urban Traffic Scenarios},
+  author={Wang, Ruolin and Xu, Yuejiao and Ji, Jianmin},
+  booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume={39},
+  number={14},
+  pages={15195--15202},
+  year={2025}
 }
 ```
